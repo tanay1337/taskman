@@ -1,0 +1,45 @@
+#!/usr/bin/sh
+
+# Data locations
+DATA_DIR=~/.local/share/taskman
+DATABASE=~/.local/share/taskman/taskman.db
+
+# Check and create the data directory
+if [[ ! -d $DATA_DIR ]]; then
+  mkdir $DATA_DIR
+fi
+
+# Check and create the sqlite3 database
+if [[ ! -f $DATABASE ]]; then
+  COMMAND="create table tasks (Task TEXT);"
+  echo "$COMMAND" | sqlite3 $DATABASE
+fi
+
+function new_task() {
+  TITLE=$(gum input --placeholder "Your task goes here")
+  COMMAND="insert into tasks (Task) values ('${TITLE}');"
+  echo "$COMMAND" | sqlite3 $DATABASE 
+  echo "Task added"
+}
+
+function show_tasks() {
+  COMMAND="select rowid, Task from tasks;"
+  echo "$COMMAND" | sqlite3 -cmd ".mode column" $DATABASE
+}
+
+function remove_task() {
+  COMMAND="delete from tasks where rowid = $1;"
+  echo "$COMMAND" | sqlite3 $DATABASE 
+  echo "Task removed"
+}
+
+ARG=$1
+
+case $ARG in
+  "new" )
+    new_task ;;
+  "show" )
+    show_tasks ;;
+  "remove" )
+    remove_task $2 ;;
+esac
