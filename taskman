@@ -11,7 +11,7 @@ fi
 
 # Check and create the sqlite3 database
 if [[ ! -f $DATABASE ]]; then
-  COMMAND="create table tasks (Task TEXT, Label TEXT, Priority TEXT, Created_Time time, Created_Date date);"
+  COMMAND="create table tasks (Task TEXT, Label TEXT, Priority TEXT, Created_Time time, Created_Date date, Status);"
   echo "$COMMAND" | sqlite3 $DATABASE
 fi
 
@@ -21,25 +21,71 @@ function new_task() {
   echo "Select priority level"
   PRIORITY=$(gum choose High Medium Low)
 
-  COMMAND="insert into tasks (Task, Label, Priority, Created_Time, Created_Date) values ('${TITLE}', '${LABEL}', '${PRIORITY}', time('now'), date('now'));"
+  COMMAND="insert into tasks (Task, Label, Priority, Created_Time, Created_Date, Status) values ('${TITLE}', '${LABEL}', '${PRIORITY}', time('now'), date('now'), 'Open');"
   echo "$COMMAND" | sqlite3 $DATABASE 
 
   echo "Task added"
 }
 
 function show_tasks() {
-  COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date' from tasks order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
-  echo "$COMMAND" | sqlite3 -cmd ".mode column" $DATABASE | gum filter
+  COMMAND="select count(*) from tasks where Status = 'Open';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+
+  if [[ ${COUNT} = 0 ]]; then
+    echo "You are all caught up - no open tasks"
+  else
+    COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date' from tasks where Status = 'Open' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
+    echo "$COMMAND" | sqlite3 -cmd ".mode column" $DATABASE | gum table
+  fi
 }
 
 function search_tasks() {
-  show_tasks | gum filter
+  COMMAND="select count(*) from tasks where Status = 'Open';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+
+  if [[ ${COUNT} = 0 ]]; then
+    echo "There are no open tasks to search"
+  else
+    COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date' from tasks where Status = 'Open' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
+    echo "$COMMAND" | sqlite3 -cmd ".mode column" $DATABASE | gum filter
+  fi
+}
+
+function finish_task() {
+  COMMAND="select count(*) from tasks where Status = 'Open';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+
+  if [[ ${COUNT} = 0 ]]; then
+    echo "There are no open tasks"
+  else
+    TASK_ID=$(show_tasks | cut -d ' ' -f 1)
+    COMMAND="update tasks set Status = 'Done' where rowid = $TASK_ID;"
+    gum confirm && echo "$COMMAND" | sqlite3 $DATABASE && echo "Task marked as done"
+  fi
+}
+
+function finished_tasks() {
+  COMMAND="select count(*) from tasks where Status = 'Done';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+  if [[ ${COUNT} = 0 ]]; then
+    echo "Nothing to see here"
+  else
+    COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date', Status from tasks where Status = 'Done' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
+    echo "$COMMAND" | sqlite3 -cmd ".mode column" $DATABASE | gum table
+  fi
 }
 
 function remove_task() {
-  TASK_ID=$(search_tasks | cut -d ' ' -f 1)
-  COMMAND="delete from tasks where rowid = $TASK_ID;"
-  gum confirm && echo "$COMMAND" | sqlite3 $DATABASE && echo "Task removed"
+  COMMAND="select count(*) from tasks where Status = 'Open';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+
+  if [[ ${COUNT} = 0 ]]; then
+    echo "There are no open tasks to search"
+  else
+    TASK_ID=$(show_tasks | cut -d ' ' -f 1)
+    COMMAND="delete from tasks where rowid = $TASK_ID;"
+    gum confirm && echo "$COMMAND" | sqlite3 $DATABASE && echo "Task removed"
+  fi
 }
 
 ARG=$1
@@ -53,4 +99,8 @@ case $ARG in
     search_tasks ;;
   "remove" )
     remove_task ;;
+  "done" | "finish" )
+    finish_task ;;
+  "finished" )
+    finished_tasks ;;
 esac

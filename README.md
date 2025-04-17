@@ -20,10 +20,12 @@ sudo make install
 ## Usage
 
 ```
-taskman new
-taskman show
-taskman search
-taskman remove
+taskman new #Create a new task
+taskman show #Show all the open tasks
+taskman search #Search through open tasks
+taskman done #Mark a task as done
+taskman remove #Remove a task
+taskman finished #Show all the tasks marked as done
 ```
 
 ## LICENSE
