@@ -2,6 +2,8 @@
 
 An extremely minimalist to-do list for the CLI.
 
+<a href="https://asciinema.org/a/716135" target="_blank"><img src="https://asciinema.org/a/716135.svg" width="600" /></a>
+
 ## Installation
 
 ### Arch-based Distros
