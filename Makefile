@@ -9,3 +9,8 @@ uninstall:
 	rm /usr/bin/taskman
 	rm -rf ~/.local/share/taskman
 	@echo "Uninstall complete"
+
+clean:
+	@echo "Deleting database"
+	rm -rf ~/.local/share/taskman
+	@echo "Deletion complete"

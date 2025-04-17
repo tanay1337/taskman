@@ -22,7 +22,8 @@ sudo make install
 ```
 taskman new
 taskman show
-taskman remove TASK_ID
+taskman search
+taskman remove
 ```
 
 ## LICENSE
