@@ -27,4 +27,4 @@ taskman remove
 ```
 
 ## LICENSE
-MIT
+[MIT](LICENSE)
