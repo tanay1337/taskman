@@ -27,13 +27,13 @@ USAGE:
 
 OPTIONS:
   -h, help                      Prints this help message
-  -n, new                       Create a new task
+  -n, new                       Creates a new task
   -u, summary                   Prints a summary of open tasks
-  -s, show                      Show all open tasks
+  -s, show                      Shows all open tasks
   -S, search                    Search through open tasks
-  -d, done                      Mark a task as done
-  -r, remove                    Remove a task
-  -f, finished                  Show all the tasks marked as done
+  -d, done                      Marks a task as done
+  -r, remove                    Removes a task
+  -f, finished                  Shows all the tasks marked as done
   -o, notify                    Sends a notification about open tasks
 ```
 

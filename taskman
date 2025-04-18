@@ -105,27 +105,27 @@ function remove_task() {
 }
 
 function help_message() {
-        echo "╭──────────────────────────────────────────────────────────────────╮"
-        echo "│                            Taskman                               │"
-        echo "╰──────────────────────────────────────────────────────────────────╯"
+        echo "╭──────────────────────────────────────────────────────────────────────╮"
+        echo "│                              Taskman                                 │"
+        echo "╰──────────────────────────────────────────────────────────────────────╯"
         echo ""
         echo "USAGE:"
         echo "  taskman [options]"
         echo ""
         echo "OPTIONS:"
         echo "  -h, help                      Prints this help message"
-        echo "  -n, new                       Create a new task"
+        echo "  -n, new                       Creates a new task"
         echo "  -u, summary                   Prints a summary of open tasks"
-        echo "  -s, show                      Show all open tasks"
+        echo "  -s, show                      Shows all open tasks"
         echo "  -S, search                    Search through open tasks"
-        echo "  -d, done                      Mark a task as done"
-        echo "  -r, remove                    Remove a task"
-        echo "  -f, finished                  Show all the tasks marked as done"
+        echo "  -d, done                      Marks a task as done"
+        echo "  -r, remove                    Removes a task"
+        echo "  -f, finished                  Shows all the tasks marked as done"
         echo "  -o, notify                    Sends a notification about open tasks"
         echo ""
-        echo "╭──────────────────────────────────────────────────────────────────╮"
-        echo "│               https://github.com/tanay1337/taskman               │"
-        echo "╰──────────────────────────────────────────────────────────────────╯"
+        echo "╭──────────────────────────────────────────────────────────────────────╮"
+        echo "│                 https://github.com/tanay1337/taskman                 │"
+        echo "╰──────────────────────────────────────────────────────────────────────╯"
 }
 
 ARG=$1
