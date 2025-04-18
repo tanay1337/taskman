@@ -19,6 +19,8 @@ Install [gum](https://github.com/charmbracelet/gum) and [make](https://www.gnu.o
 sudo make install
 ```
 
+Note: If you are on macOS, make sure that `/usr/local` is added to PATH. 
+
 ## Usage
 
 ```
