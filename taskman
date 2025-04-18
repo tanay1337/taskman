@@ -39,6 +39,22 @@ function show_tasks() {
   fi
 }
 
+function show_summary() {
+  COMMAND="select count(*) from tasks where Status = 'Open';"
+  COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
+
+  if [[ ${COUNT} = 0 ]]; then
+    echo "You are all caught up - no open tasks"
+  else
+    echo "You have ${COUNT} open tasks."
+  fi
+}
+
+function send_notification() {
+  SUMMARY=$(show_summary)
+  notify-send -u normal "Taskman" "${SUMMARY}"
+}
+
 function search_tasks() {
   COMMAND="select count(*) from tasks where Status = 'Open';"
   COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
@@ -88,19 +104,49 @@ function remove_task() {
   fi
 }
 
+function help_message() {
+        echo "╭──────────────────────────────────────────────────────────────────╮"
+        echo "│                            Taskman                               │"
+        echo "╰──────────────────────────────────────────────────────────────────╯"
+        echo ""
+        echo "USAGE:"
+        echo "  taskman [options]"
+        echo ""
+        echo "OPTIONS:"
+        echo "  -h, help                      Prints this help message"
+        echo "  -n, new                       Create a new task"
+        echo "  -u, summary                   Prints a summary of open tasks"
+        echo "  -s, show                      Show all open tasks"
+        echo "  -S, search                    Search through open tasks"
+        echo "  -d, done                      Mark a task as done"
+        echo "  -r, remove                    Remove a task"
+        echo "  -f, finished                  Show all the tasks marked as done"
+        echo "  -o, notify                    Sends a notification about open tasks"
+        echo ""
+        echo "╭──────────────────────────────────────────────────────────────────╮"
+        echo "│               https://github.com/tanay1337/taskman               │"
+        echo "╰──────────────────────────────────────────────────────────────────╯"
+}
+
 ARG=$1
 
 case $ARG in
-  "new" )
+  "help" | "-h" )
+    help_message ;;
+  "new" | "-n" )
     new_task ;;
-  "show" | "" )
+  "summary" | "-u" )
+    show_summary ;;
+  "show" | "" | "-s" )
     show_tasks ;;
-  "search" )
+  "search" | "-S" )
     search_tasks ;;
-  "remove" )
+  "remove" | "-r" )
     remove_task ;;
-  "done" | "finish" )
+  "done" | "finish" | "-d" )
     finish_task ;;
-  "finished" )
+  "finished" | "-f" )
     finished_tasks ;;
+  "notify" | "-o" )
+    send_notification ;;
 esac

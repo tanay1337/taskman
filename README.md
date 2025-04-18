@@ -22,12 +22,19 @@ sudo make install
 ## Usage
 
 ```
-taskman new #Create a new task
-taskman show #Show all the open tasks
-taskman search #Search through open tasks
-taskman done #Mark a task as done
-taskman remove #Remove a task
-taskman finished #Show all the tasks marked as done
+USAGE:
+  taskman [options]
+
+OPTIONS:
+  -h, help                      Prints this help message
+  -n, new                       Create a new task
+  -u, summary                   Prints a summary of open tasks
+  -s, show                      Show all open tasks
+  -S, search                    Search through open tasks
+  -d, done                      Mark a task as done
+  -r, remove                    Remove a task
+  -f, finished                  Show all the tasks marked as done
+  -o, notify                    Sends a notification about open tasks
 ```
 
 ## LICENSE
