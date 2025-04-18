@@ -16,7 +16,7 @@ if [[ ! -f $DATABASE ]]; then
 fi
 
 # Helper function
-function count_open_tasks() {
+function count_tasks() {
   COMMAND="select count(*) from tasks where Status = '${1}';"
   COUNT=$(echo "$COMMAND" | sqlite3 $DATABASE)
   echo ${COUNT}
@@ -35,7 +35,7 @@ function new_task() {
 }
 
 function show_tasks() {
-  if [[ $(count_open_tasks 'Open') = 0 ]]; then
+  if [[ $(count_tasks 'Open') = 0 ]]; then
     echo "You are all caught up - no open tasks"
   else
     COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date' from tasks where Status = 'Open' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
@@ -44,10 +44,10 @@ function show_tasks() {
 }
 
 function show_summary() {
-  if [[ $(count_open_tasks 'Open') = 0 ]]; then
+  if [[ $(count_tasks 'Open') = 0 ]]; then
     echo "You are all caught up - no open tasks"
   else
-    echo "You have $(count_open_tasks 'Open') open tasks."
+    echo "You have $(count_tasks 'Open') open tasks."
   fi
 }
 
@@ -57,7 +57,7 @@ function send_notification() {
 }
 
 function search_tasks() {
-  if [[ $(count_open_tasks 'Open') = 0 ]]; then
+  if [[ $(count_tasks 'Open') = 0 ]]; then
     echo "There are no open tasks to search"
   else
     COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date' from tasks where Status = 'Open' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
@@ -66,7 +66,7 @@ function search_tasks() {
 }
 
 function finish_task() {
-  if [[ $(count_open_tasks 'Open') = 0 ]]; then
+  if [[ $(count_tasks 'Open') = 0 ]]; then
     echo "There are no open tasks"
   else
     TASK_ID=$(show_tasks | cut -d ' ' -f 1)
@@ -76,7 +76,7 @@ function finish_task() {
 }
 
 function finished_tasks() {
-  if [[ $(count_open_tasks 'Done') = 0 ]]; then
+  if [[ $(count_tasks 'Done') = 0 ]]; then
     echo "There are no tasks marked as finished"
   else
     COMMAND="select rowid as ID, Task, Label, Priority, Created_Time as 'Created Time', Created_Date as 'Created Date', Status from tasks where Status = 'Done' order by case Priority when 'High' then 1 when 'Medium' then 2 else 3 end;"
@@ -85,7 +85,7 @@ function finished_tasks() {
 }
 
 function remove_task() {
-  if [[ $(count_open_tasks 'Open') = 0 ]]; then
+  if [[ $(count_tasks 'Open') = 0 ]]; then
     echo "There are no open tasks to remove"
   else
     TASK_ID=$(show_tasks | cut -d ' ' -f 1)
