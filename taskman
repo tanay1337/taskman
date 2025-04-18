@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 
 # Data locations
 DATA_DIR=~/.local/share/taskman
@@ -6,7 +6,7 @@ DATABASE=~/.local/share/taskman/taskman.db
 
 # Check and create the data directory
 if [[ ! -d $DATA_DIR ]]; then
-  mkdir $DATA_DIR
+  mkdir -p $DATA_DIR
 fi
 
 # Check and create the sqlite3 database
